@@ -4,11 +4,11 @@ import { getTicketsTypes} from '@/controllers';
 
 
 const ticketsRouter = Router();
+ticketsRouter.use(authenticateToken);
 
 ticketsRouter
   .get('/types', getTicketsTypes)
-//   .all('/*', authenticateToken)
   .get('/')
-  .post('/');
+  .post('/')
 
 export { ticketsRouter };
