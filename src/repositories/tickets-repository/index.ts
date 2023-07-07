@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Ticket } from "@prisma/client";
 import { prisma } from "../../config";
 import { notFoundError } from '@/errors';
 
@@ -6,26 +6,26 @@ async function getTicketsTypes(){
     return await prisma.ticketType.findMany();
 }
 
-async function getTickets(userId: number){
+async function getEnrollmentByUserId(userId: number){
     const enrollment = await prisma.enrollment.findFirst({
         where:{
             userId
         }
     })
-    if (!enrollment) {
-        throw notFoundError();
-      }
-      
+    return enrollment;
+}
+
+async function getTicketByEnrollmentId(enrollmentId: number){
     const ticket = await prisma.ticket.findFirst({
         where: {
-            enrollmentId: enrollment.id
+            enrollmentId
         }
     })
 
-    if (!ticket) {
-        throw notFoundError();
-      }
+    return ticket;
+}
 
+async function getTickets(ticket: Ticket){
     const ticketType = await prisma.ticketType.findFirst({
         where: {
             id: ticket.ticketTypeId
@@ -40,13 +40,27 @@ async function getTickets(userId: number){
         TicketType: ticketType,
         createdAt: ticket.createdAt,
         updatedAt: ticket.updatedAt
-})
-    
+})    
+}
+
+async function createTicket(ticketTypeId: number, enrollmentId: number){
+    return await prisma.ticket.create({
+        data: {
+            ticketTypeId,
+            enrollmentId,
+            status: 'RESERVED',
+            createdAt: new Date(),
+            updatedAt: new Date()
+        }
+    })
 }
 
 const ticketsRepository = {
     getTicketsTypes,
-    getTickets
+    getTickets,
+    createTicket,
+    getEnrollmentByUserId,
+    getTicketByEnrollmentId
 }
 
 export default ticketsRepository;
