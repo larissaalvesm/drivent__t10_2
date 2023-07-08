@@ -1,4 +1,3 @@
-import { number } from "joi";
 import ticketsRepository from "../../repositories/tickets-repository";
 import { notFoundError } from '@/errors';
 

@@ -1,6 +1,5 @@
-import { Prisma, Ticket } from "@prisma/client";
+import { Ticket } from "@prisma/client";
 import { prisma } from "../../config";
-import { notFoundError } from '@/errors';
 
 async function getTicketsTypes(){
     return await prisma.ticketType.findMany();
@@ -43,6 +42,14 @@ async function getTickets(ticket: Ticket){
 })    
 }
 
+async function getTicketType(ticket: Ticket){
+    return await prisma.ticketType.findFirst({
+        where: {
+            id: ticket.ticketTypeId
+        }
+    })
+}
+
 async function createTicket(ticketTypeId: number, enrollmentId: number){
     return await prisma.ticket.create({
         data: {
@@ -55,12 +62,20 @@ async function createTicket(ticketTypeId: number, enrollmentId: number){
     })
 }
 
+async function getTicketById(ticketId: number){
+    return await prisma.ticket.findUnique({
+        where: {id: ticketId}
+    })
+}
+
 const ticketsRepository = {
     getTicketsTypes,
     getTickets,
     createTicket,
     getEnrollmentByUserId,
-    getTicketByEnrollmentId
+    getTicketByEnrollmentId,
+    getTicketById,
+    getTicketType
 }
 
 export default ticketsRepository;

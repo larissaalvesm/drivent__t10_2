@@ -44,3 +44,21 @@ export type RequestError = {
   name: string;
   message: string;
 };
+
+
+export type TicketType = {
+  ticketTypeId: number;
+}
+
+export type Card = {
+  issuer: string;
+    number: number;
+    name: string;
+    expirationDate: Date;
+    cvv: number
+}
+
+export type Payment = {
+  ticketId: number,
+	cardData: Card
+}
