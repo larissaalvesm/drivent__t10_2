@@ -3,22 +3,12 @@ import { prisma } from "../../config";
 import { Card } from "../../protocols";
 
 
-async function getPayments(){
-//     const ticketType = await prisma.ticketType.findFirst({
-//         where: {
-//             id: ticket.ticketTypeId
-//         }
-//     })
-
-//     return ({
-//         id: ticket.id,
-//         status: ticket.status,
-//         ticketTypeId: ticket.ticketTypeId,
-//         enrollmentId: ticket.enrollmentId,
-//         TicketType: ticketType,
-//         createdAt: ticket.createdAt,
-//         updatedAt: ticket.updatedAt
-// })    
+async function getPayments(ticketId: number){
+  return await prisma.payment.findFirst({
+    where: {
+      ticketId
+    }
+  })
 }
 
 async function processPayment(ticket: Ticket, value: number, cardData: Card){

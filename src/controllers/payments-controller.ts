@@ -1,23 +1,26 @@
-import { Request, Response } from "express";
-import httpStatus from "http-status";
-import { AuthenticatedRequest } from "../middlewares";
-import paymentsService from "../services/payments-service";
-import { Payment } from "../protocols";
+import { Response } from 'express';
+import httpStatus from 'http-status';
+import { AuthenticatedRequest } from '@/middlewares';
+import paymentsService from "@/services/payments-service";
+import { Payment } from "@/protocols";
 
+export async function getPayments(req: AuthenticatedRequest, res: Response){
+    const receivedTicketId = req.query.ticketId as string;
+    const { userId } = req;
 
-export async function getPayments(req: Request, res: Response){
-    try{
+    if (!receivedTicketId) return res.sendStatus(httpStatus.BAD_REQUEST);
 
-    } catch (error) {
-        return res.sendStatus(httpStatus.BAD_REQUEST);
-    }
+    const ticketId = parseInt(receivedTicketId);
+
+    const payment = await paymentsService.getPayments(ticketId, userId);
+    return res.send(payment);
 }
 
 export async function processPayment(req: AuthenticatedRequest, res: Response){
     const { ticketId, cardData } = req.body as Payment;
-    const {userId} = req.body
+    const {userId} = req;
 
-    if(!ticketId || !cardData){
+    if (!ticketId || !cardData){
         res.sendStatus(httpStatus.BAD_REQUEST);
     }
 

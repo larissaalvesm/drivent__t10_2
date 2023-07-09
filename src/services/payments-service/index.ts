@@ -4,8 +4,24 @@ import paymentsRepository from "../../repositories/payments-repository";
 import ticketsRepository from "../../repositories/tickets-repository";
 
 
-async function getPayments() {
-    
+async function getPayments(ticketId: number, userId: number) {
+    const ticket = await ticketsRepository.getTicketById(ticketId);
+    if(!ticket ){
+    throw notFoundError();
+    }
+
+    const enrollment = await ticketsRepository.getEnrollmentByUserId(userId);
+   if(!enrollment){
+    throw notFoundError();
+   }
+
+   const ticketByUser = await ticketsRepository.getTicketByEnrollmentId(enrollment.id);
+   if(!ticketByUser){
+    throw unauthorizedError();
+   }
+
+   return await paymentsRepository.getPayments(ticketId);
+
 }
 
 async function processPayment(userId: number, ticketId: number, cardData: Card ) {
